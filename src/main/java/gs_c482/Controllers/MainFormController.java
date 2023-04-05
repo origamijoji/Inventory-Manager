@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -113,10 +114,10 @@ public class MainFormController implements Initializable {
                 Scene scene = new Scene(loader.load(), 600, 400);
 
                 Stage stage = new Stage();
-                stage.setMinWidth(600);
-                stage.setMinHeight(400);
                 stage.setTitle("Add Part");
                 stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setResizable(false);
                 stage.show();
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "An unknown error has occurred", ButtonType.OK);
@@ -134,7 +135,7 @@ public class MainFormController implements Initializable {
     protected EventHandler<ActionEvent> onActionOpenNewModifyPartMenu() {
         return event -> {
             try {
-                Part selectedPart = partsTableView.getSelectionModel().selectedItemProperty().getValue();
+                Part selectedPart = partsTableView.getSelectionModel().getSelectedItem();
                 if (selectedPart == null) {
                     throw new MissingValueException();
                 }
@@ -145,10 +146,10 @@ public class MainFormController implements Initializable {
 
                 Stage stage = new Stage();
                 stage.setUserData(selectedPart);
-                stage.setMinWidth(600);
-                stage.setMinHeight(400);
                 stage.setTitle("Add Part");
                 stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setResizable(false);
                 stage.show();
 
                 ModifyPartFormController controller = loader.getController();
@@ -165,7 +166,7 @@ public class MainFormController implements Initializable {
     protected EventHandler<ActionEvent> onActionDeletePart() {
         return event -> {
             try {
-                Part selectedPart = partsTableView.getSelectionModel().selectedItemProperty().getValue();
+                Part selectedPart = partsTableView.getSelectionModel().getSelectedItem();
                 if (selectedPart == null) {
                     throw new MissingValueException();
                 }
@@ -218,13 +219,13 @@ public class MainFormController implements Initializable {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/gs_c482/product-form.fxml"));
                 loader.setController(new AddProductFormController());
-                Scene scene = new Scene(loader.load(), 864, 557);
+                Scene scene = new Scene(loader.load(), 857, 557);
 
                 Stage stage = new Stage();
-                stage.setMinWidth(857);
-                stage.setMinHeight(557);
                 stage.setTitle("Add Product");
                 stage.setScene(scene);
+                stage.setResizable(false);
+                stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
             } catch (Exception e) {
                 e.printStackTrace(System.out);
