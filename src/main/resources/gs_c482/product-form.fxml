@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="557.0"
+      prefWidth="854.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#1f93ff00" height="534.0" layoutX="10.0" layoutY="11.0"
+                   stroke="BLACK" strokeType="INSIDE" width="834.0"/>
+        <HBox layoutX="9.0" layoutY="22.0" prefHeight="523.0" prefWidth="834.0">
+            <children>
+                <Pane prefHeight="523.0" prefWidth="439.0">
+                    <children>
+                        <Label layoutX="20.0" layoutY="11.0" prefHeight="32.0" prefWidth="107.0" text="Add Product" fx:id="menuLabel">
+                            <font>
+                                <Font name="System Bold" size="13.0"/>
+                            </font>
+                        </Label>
+                        <Pane layoutY="71.0" prefHeight="26.0" prefWidth="287.0">
+                            <children>
+                                <Label layoutX="38.0" layoutY="4.0" prefHeight="19.0" prefWidth="89.0" text="ID">
+                                    <font>
+                                        <Font size="13.0"/>
+                                    </font>
+                                </Label>
+                                <TextField layoutX="98.0" prefHeight="25.0" prefWidth="184.0" fx:id="idField"/>
+                            </children>
+                        </Pane>
+                        <Pane layoutY="109.0" prefHeight="26.0" prefWidth="287.0">
+                            <children>
+                                <Label layoutX="38.0" layoutY="4.0" prefHeight="19.0" prefWidth="89.0" text="Name">
+                                    <font>
+                                        <Font size="13.0"/>
+                                    </font>
+                                </Label>
+                                <TextField layoutX="98.0" prefHeight="25.0" prefWidth="184.0" fx:id="nameField"/>
+                            </children>
+                        </Pane>
+                        <Pane layoutY="149.0" prefHeight="26.0" prefWidth="287.0">
+                            <children>
+                                <Label layoutX="38.0" layoutY="4.0" prefHeight="19.0" prefWidth="89.0" text="Inv">
+                                    <font>
+                                        <Font size="13.0"/>
+                                    </font>
+                                </Label>
+                                <TextField layoutX="98.0" prefHeight="25.0" prefWidth="89.0" fx:id="invField"/>
+                            </children>
+                        </Pane>
+                        <Pane layoutY="185.0" prefHeight="26.0" prefWidth="287.0">
+                            <children>
+                                <Label layoutX="38.0" layoutY="4.0" prefHeight="19.0" prefWidth="89.0" text="Price">
+                                    <font>
+                                        <Font size="13.0"/>
+                                    </font>
+                                </Label>
+                                <TextField layoutX="99.0" prefHeight="25.0" prefWidth="89.0" fx:id="priceField"/>
+                            </children>
+                        </Pane>
+                        <Pane layoutY="221.0" prefHeight="26.0" prefWidth="287.0">
+                            <children>
+                                <Label layoutX="38.0" layoutY="4.0" prefHeight="19.0" prefWidth="89.0" text="Max">
+                                    <font>
+                                        <Font size="13.0"/>
+                                    </font>
+                                </Label>
+                                <TextField layoutX="99.0" prefHeight="25.0" prefWidth="89.0" fx:id="maxField"/>
+                                <Label layoutX="199.0" layoutY="4.0" prefHeight="19.0" prefWidth="89.0" text="Min">
+                                    <font>
+                                        <Font size="13.0"/>
+                                    </font>
+                                </Label>
+                                <TextField layoutX="236.0" layoutY="1.0" prefHeight="25.0" prefWidth="89.0" fx:id="minField"/>
+                            </children>
+                        </Pane>
+                    </children>
+                </Pane>
+                <Pane prefHeight="523.0" prefWidth="468.0">
+                    <children>
+                        <TextField layoutX="269.0" layoutY="14.0" promptText="Search by Part ID or Name" fx:id="partTextField"/>
+                        <TableView layoutX="27.0" layoutY="52.0" prefHeight="150.0" prefWidth="391.0" fx:id="partsTableView">
+                            <columns>
+                                <TableColumn prefWidth="60.0" text="Part ID" fx:id="partIdTableColumn"/>
+                                <TableColumn prefWidth="89.0" text="Part Name" fx:id="partNameTableColumn"/>
+                                <TableColumn prefWidth="103.0" text="Inventory Level" fx:id="partInventoryLevelTableColumn"/>
+                                <TableColumn prefWidth="126.0" text="Price/ Cost per Unit" fx:id="partPriceTableColumn"/>
+                            </columns>
+                        </TableView>
+                        <Button layoutX="334.0" layoutY="214.0" mnemonicParsing="false" prefHeight="25.0"
+                                prefWidth="48.0" text="Add" fx:id="addAssociationButton"/>
+                        <TableView layoutX="27.0" layoutY="251.0" prefHeight="150.0" prefWidth="391.0" fx:id="associatedPartsTableView">
+                            <columns>
+                                <TableColumn prefWidth="60.0" text="Part ID" fx:id="associatedPartIdTableColumn"/>
+                                <TableColumn prefWidth="88.0" text="Part Name" fx:id="associatedPartNameTableColumn"/>
+                                <TableColumn prefWidth="103.0" text="Inventory Level" fx:id="associatedPartInventoryLevelTableColumn"/>
+                                <TableColumn prefWidth="128.0" text="Price/ Cost per Unit" fx:id="associatedPartPriceTableColumn"/>
+                            </columns>
+                        </TableView>
+                        <Button layoutX="236.0" layoutY="415.0" mnemonicParsing="false" prefHeight="25.0"
+                                prefWidth="161.0" text="Remove Associated Part" fx:id="removeAssociationButton"/>
+                        <Button layoutX="236.0" layoutY="449.0" mnemonicParsing="false" prefHeight="25.0"
+                                prefWidth="62.0" text="Save" fx:id="saveButton"/>
+                        <Button layoutX="335.0" layoutY="449.0" mnemonicParsing="false" prefHeight="25.0"
+                                prefWidth="62.0" text="Cancel" fx:id="cancelButton"/>
+                    </children>
+                </Pane>
+            </children>
+        </HBox>
+    </children>
+</Pane>

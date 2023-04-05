@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="383.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Pane prefHeight="86.0" prefWidth="600.0">
+            <children>
+                <Label layoutX="74.0" layoutY="34.0" prefHeight="19.0" prefWidth="83.0" text="Modify Part" fx:id="menuLabel">
+                    <font>
+                        <Font name="System Bold" size="13.0"/>
+                    </font>
+                </Label>
+                <RadioButton fx:id="inHouseRadioButton" layoutX="208.0" layoutY="35.0" mnemonicParsing="false"
+                             text="In-House"/>
+                <RadioButton fx:id="outsourcedRadioButton" layoutX="324.0" layoutY="35.0" mnemonicParsing="false"
+                             text="Outsourced"/>
+            </children>
+        </Pane>
+        <Pane prefHeight="32.0" prefWidth="600.0">
+            <children>
+                <Label layoutX="96.0" layoutY="6.0" prefHeight="19.0" prefWidth="83.0" text="ID">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <TextField editable="false" layoutX="206.0" layoutY="3.0" opacity="0.55" prefHeight="25.0"
+                           prefWidth="141.0" fx:id="idField">
+                    <font>
+                        <Font name="System Italic" size="12.0"/>
+                    </font>
+                </TextField>
+            </children>
+        </Pane>
+        <Pane layoutX="10.0" layoutY="96.0" prefHeight="32.0" prefWidth="600.0">
+            <children>
+                <Label layoutX="96.0" layoutY="6.0" prefHeight="19.0" prefWidth="83.0" text="Name">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="nameField" layoutX="206.0" layoutY="4.0" prefHeight="25.0" prefWidth="141.0"/>
+            </children>
+        </Pane>
+        <Pane layoutX="10.0" layoutY="128.0" prefHeight="32.0" prefWidth="600.0">
+            <children>
+                <Label layoutX="96.0" layoutY="6.0" prefHeight="19.0" prefWidth="83.0" text="Inv">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="invField" layoutX="206.0" layoutY="3.0" prefHeight="25.0" prefWidth="141.0"/>
+            </children>
+        </Pane>
+        <Pane layoutX="10.0" layoutY="160.0" prefHeight="32.0" prefWidth="600.0">
+            <children>
+                <Label layoutX="96.0" layoutY="6.0" prefHeight="19.0" prefWidth="83.0" text="Price/Cost">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="priceField" layoutX="206.0" layoutY="3.0" prefHeight="25.0" prefWidth="141.0"/>
+            </children>
+        </Pane>
+        <Pane layoutX="10.0" layoutY="192.0" prefHeight="32.0" prefWidth="600.0">
+            <children>
+                <Label layoutX="96.0" layoutY="6.0" prefHeight="19.0" prefWidth="83.0" text="Max">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="maxField" layoutX="206.0" layoutY="2.0" prefHeight="25.0" prefWidth="141.0"/>
+                <Label layoutX="370.0" layoutY="6.0" prefHeight="19.0" prefWidth="32.0" text="Min">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="minField" layoutX="408.0" layoutY="3.0" prefHeight="25.0" prefWidth="141.0"/>
+            </children>
+        </Pane>
+        <Pane layoutX="10.0" layoutY="224.0" prefHeight="32.0" prefWidth="600.0">
+            <children>
+                <Label fx:id="bonusLabel" layoutX="96.0" layoutY="6.0" prefHeight="19.0" prefWidth="103.0"
+                       text="Machine ID">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="bonusField" layoutX="206.0" layoutY="3.0" prefHeight="25.0" prefWidth="141.0"/>
+            </children>
+        </Pane>
+        <Pane prefHeight="101.0" prefWidth="600.0">
+            <children>
+                <Button layoutX="360.0" layoutY="37.0" mnemonicParsing="false" text="Save"/>
+                <Button layoutX="408.0" layoutY="37.0" mnemonicParsing="false" text="Cancel"/>
+                <Label fx:id="errorLabel" layoutX="87.0" layoutY="41.0" prefHeight="17.0" prefWidth="261.0"
+                       textAlignment="CENTER" textFill="RED">
+                    <font>
+                        <Font name="System Bold" size="12.0"/>
+                    </font>
+                </Label>
+            </children>
+        </Pane>
+    </children>
+</VBox>
