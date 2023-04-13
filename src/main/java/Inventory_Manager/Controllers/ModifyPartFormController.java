@@ -1,19 +1,20 @@
-package gs_c482.Controllers;
+package Inventory_Manager.Controllers;
 
-import gs_c482.Models.InHouse;
-import gs_c482.Models.Inventory;
-import gs_c482.Models.Outsourced;
-import gs_c482.Models.Part;
+import Inventory_Manager.Models.InHouse;
+import Inventory_Manager.Models.Inventory;
+import Inventory_Manager.Models.Outsourced;
+import Inventory_Manager.Models.Part;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static Inventory_Manager.Utility.errorAlert;
 
 public class ModifyPartFormController implements Initializable {
     private PartType type;
@@ -22,15 +23,11 @@ public class ModifyPartFormController implements Initializable {
         InHouse, Outsourced
     }
 
-    private int index;
-
     // LABELS
     @FXML
     private Label menuLabel;
     @FXML
     private Label bonusLabel;
-    @FXML
-    private Label errorLabel;
 
     // BUTTONS
     @FXML
@@ -78,6 +75,10 @@ public class ModifyPartFormController implements Initializable {
 
     }
 
+    /**
+     * Sets the form to InHouse and changes the bonus field text
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionSetFormInHouse() {
         return event -> {
             this.type = PartType.InHouse;
@@ -85,6 +86,10 @@ public class ModifyPartFormController implements Initializable {
         };
     }
 
+    /**
+     * Sets the form to Outsourced and changes the bonus field text
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionSetFormOutsourced() {
         return event -> {
             this.type = PartType.Outsourced;
@@ -92,8 +97,15 @@ public class ModifyPartFormController implements Initializable {
         };
     }
 
+    /**
+     * Imports data to be called from another controller
+     * RUNTIME ERROR: I ran into quite a few errors trying to detect what the part was and importing the data,
+     * I resolved this by checking if the part is InHouse or Outsourced and then cast it to its respective type before
+     * fetching its specialized data
+     *
+     * @param part to be updated to
+     */
     public void loadData(Part part) {
-        this.index = 0;
         idField.setText(Integer.toString(part.getId()));
         nameField.setText(part.getName());
         invField.setText(Integer.toString(part.getStock()));
@@ -115,9 +127,14 @@ public class ModifyPartFormController implements Initializable {
         Inventory.lookupPart(part.getId());
     }
 
+    /**
+     * Update the current part based on the given input
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionSavePartCloseMenu() {
         return event -> {
             try {
+                if(!inputValid()) return;
                 int id = Integer.parseInt(idField.getText());
                 String name = nameField.getText();
                 double price = Double.parseDouble(priceField.getText());
@@ -125,22 +142,6 @@ public class ModifyPartFormController implements Initializable {
                 int min = Integer.parseInt(minField.getText());
                 int max = Integer.parseInt(maxField.getText());
 
-                validateInputs();
-                if (min >= max) {
-                    errorLabel.setTextFill(Color.RED);
-                    errorLabel.setText("Min cannot equal or exceed max!");
-                    return;
-                }
-                if (stock > max) {
-                    errorLabel.setTextFill(Color.RED);
-                    errorLabel.setText("Stock cannot be greater than max!");
-                    return;
-                }
-                if (stock < min) {
-                    errorLabel.setTextFill(Color.RED);
-                    errorLabel.setText("Stock cannot be less than min!");
-                    return;
-                }
                 if (this.type.equals(PartType.InHouse)) {
                     InHouse newPart = new InHouse(id, name, price, stock, min, max, Integer.parseInt(bonusField.getText()));
                     Inventory.updatePart(id, newPart);
@@ -148,18 +149,19 @@ public class ModifyPartFormController implements Initializable {
                     Outsourced newPart = new Outsourced(id, name, price, stock, min, max, bonusField.getText());
                     Inventory.updatePart(id, newPart);
                 }
-                errorLabel.setTextFill(Color.GREEN);
-                errorLabel.setText("Part Added!");
+                Stage stage = (Stage) cancelButton.getScene().getWindow();
+                stage.close();
             } catch (Exception e) {
-                errorLabel.setTextFill(Color.RED);
-                errorLabel.setText("The provided values are incorrect/exceed size");
+                errorAlert("The provided values are incorrect");
                 e.printStackTrace(System.out);
             }
-            Stage stage = (Stage) cancelButton.getScene().getWindow();
-            stage.close();
         };
     }
 
+    /**
+     * Close the current stage
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionCloseMenu() {
         return event -> {
             Stage stage = (Stage) cancelButton.getScene().getWindow();
@@ -167,14 +169,60 @@ public class ModifyPartFormController implements Initializable {
         };
     }
 
-    protected void validateInputs() {
-        if (!nameField.getText().isEmpty()) return;
-        if (!priceField.getText().isEmpty()) return;
-        if (!invField.getText().isEmpty()) return;
-        if (!minField.getText().isEmpty()) return;
-        if (!maxField.getText().isEmpty()) return;
-        if (!bonusField.getText().isEmpty()) return;
-        errorLabel.setTextFill(Color.RED);
-        errorLabel.setText("*Please fill out all fields");
+    /**
+     * Validate the given input, send alert if incorrect
+     * @return a boolean representing whether the input is valid or not
+     */
+    protected boolean inputValid() {
+        if (nameField.getText().isEmpty()) {
+            errorAlert("The name field cannot be empty!");
+            return false;
+        }
+        else if (priceField.getText().isEmpty()) {
+            errorAlert("The price field cannot be empty!");
+            return false;
+        }
+        else if (invField.getText().isEmpty()) {
+            errorAlert("The inv field cannot be empty!");
+            return false;
+        }
+        else if (minField.getText().isEmpty()) {
+            errorAlert("The min field cannot be empty!");
+            return false;
+        }
+        if (maxField.getText().isEmpty()) {
+            errorAlert("The max field cannot be empty!");
+            return false;
+        }
+        if (bonusField.getText().isEmpty()) {
+            if (type == PartType.InHouse) {
+                errorAlert("The machine ID field cannot be empty!");
+            } else if (type == PartType.Outsourced) {
+                errorAlert("The company name field cannot be empty!");
+            }
+            return false;
+        }
+
+        int stock = Integer.parseInt(invField.getText());
+        int min = Integer.parseInt(minField.getText());
+        int max = Integer.parseInt(maxField.getText());
+        if(min < 0 || max < 0 || stock < 0) {
+            errorAlert("Min, max, and stock must equal or exceed 0");
+            return false;
+        }
+
+        if (min >= max) {
+            errorAlert("Min cannot equal or exceed max!");
+            return false;
+        }
+        if (stock > max) {
+            errorAlert("Current inv cannot exceed max!");
+            return false;
+        }
+        if (stock < min) {
+            errorAlert("Min cannot exceed the current inv!");
+            return false;
+        }
+        return true;
     }
 }

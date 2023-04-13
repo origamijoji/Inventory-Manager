@@ -1,4 +1,4 @@
-package gs_c482.Models;
+package Inventory_Manager.Models;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,7 +27,7 @@ public class Inventory {
     }
 
     /**
-     * Loops through each element in allParts, returns first part with matching ID, else null
+     * Returns the first part with the given id
      * O(n) time. O(1) space; n = length of allParts
      *
      * @param partId ID belonging to the part being queried
@@ -43,7 +43,7 @@ public class Inventory {
     }
 
     /**
-     * Loops through each element in allProducts, returns first product with matching productId, else null
+     * Returns the first product with the given id
      * O(n) time. O(1) space; n = length of allProducts
      *
      * @param productId ID belonging to the product being queried
@@ -59,7 +59,7 @@ public class Inventory {
     }
 
     /**
-     * Loops through each element in allParts, appends each element containing "name" to the returned object
+     * Returns a list of parts containing the given string
      * O(n) time. O(n) space (+ .contains); n = length of allParts
      *
      * @param name name belonging to the part[s] being queried
@@ -77,7 +77,7 @@ public class Inventory {
     }
 
     /**
-     * Loops through each element in allProducts, appends each element containing "name" to the returned object
+     * Returns a list of products containing the given string
      * O(n) time. O(n) space (+ .contains); n = length of allParts
      *
      * @param name name belonging to the product[s] being queried
@@ -112,15 +112,20 @@ public class Inventory {
     /**
      * Sets product at index to specified product
      *
-     * @param index      index belonging to product being updated
+     * @param index      id belonging to product being updated
      * @param newProduct new product being updated to
      */
     public static void updateProduct(int index, Product newProduct) {
-        allProducts.set(index, newProduct);
+        for(int i = 0; i < allProducts.size(); i++) {
+            if(allProducts.get(i).getId() == index) {
+                allProducts.set(i, newProduct);
+                return;
+            }
+        }
     }
 
     /**
-     * Finds and deletes parts by looping through IDs, then name if not found
+     * Finds and deletes a part
      * O(2n) time. O(1) space; n = length of allParts
      *
      * @param selectedPart part to be queried and deleted
@@ -143,7 +148,7 @@ public class Inventory {
     }
 
     /**
-     * Finds and deletes products by looping through IDs, then name if not found
+     * Finds and deletes a product
      * O(2n) time. O(1) space; n = length of allProducts
      *
      * @param selectedProduct part to be queried and deleted

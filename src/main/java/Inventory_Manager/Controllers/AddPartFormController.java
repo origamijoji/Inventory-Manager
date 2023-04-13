@@ -1,19 +1,20 @@
-package gs_c482.Controllers;
+package Inventory_Manager.Controllers;
 
-import gs_c482.Models.InHouse;
-import gs_c482.Models.Inventory;
-import gs_c482.Models.Outsourced;
-import gs_c482.Models.Part;
+import Inventory_Manager.Models.InHouse;
+import Inventory_Manager.Models.Inventory;
+import Inventory_Manager.Models.Outsourced;
+import Inventory_Manager.Models.Part;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static Inventory_Manager.Utility.errorAlert;
 
 public class AddPartFormController implements Initializable {
     private PartType type;
@@ -27,8 +28,6 @@ public class AddPartFormController implements Initializable {
     private Label menuLabel;
     @FXML
     private Label bonusLabel;
-    @FXML
-    private Label errorLabel;
 
     // BUTTONS
     @FXML
@@ -37,6 +36,8 @@ public class AddPartFormController implements Initializable {
     private RadioButton outsourcedRadioButton;
 
     // INPUT FIELDS
+    @FXML
+    private TextField idField;
     @FXML
     private TextField nameField;
     @FXML
@@ -59,6 +60,7 @@ public class AddPartFormController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         menuLabel.setText("Add Part");
+        idField.setText(Integer.toString(generatePartID()));
 
         ToggleGroup typeToggleGroup = new ToggleGroup();
         inHouseRadioButton.setToggleGroup(typeToggleGroup);
@@ -71,9 +73,12 @@ public class AddPartFormController implements Initializable {
 
         cancelButton.setOnAction(onActionCloseWindow());
         saveButton.setOnAction(onActionSavePart());
-
     }
 
+    /**
+     * Sets the form to InHouse and changes the extra field text
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionSetFormInHouse() {
         return event -> {
             this.type = PartType.InHouse;
@@ -81,6 +86,10 @@ public class AddPartFormController implements Initializable {
         };
     }
 
+    /**
+     * Sets the form to Outsourced and changes the extra field text
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionSetFormOutsourced() {
         return event -> {
             this.type = PartType.Outsourced;
@@ -88,6 +97,10 @@ public class AddPartFormController implements Initializable {
         };
     }
 
+    /**
+     * Close the current stage
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionCloseWindow() {
         return event -> {
             Stage stage = (Stage) cancelButton.getScene().getWindow();
@@ -95,32 +108,21 @@ public class AddPartFormController implements Initializable {
         };
     }
 
+    /**
+     * Create a new part based on the given input
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionSavePart() {
         return event -> {
             try {
-                int id = generatePartID();
+                if(!inputValid()) return;
+                int id = Integer.parseInt(idField.getText());
                 String name = nameField.getText();
                 double price = Double.parseDouble(priceField.getText());
                 int stock = Integer.parseInt(invField.getText());
                 int min = Integer.parseInt(minField.getText());
                 int max = Integer.parseInt(maxField.getText());
 
-                validateInputs();
-                if (min >= max) {
-                    errorLabel.setTextFill(Color.RED);
-                    errorLabel.setText("Min cannot equal or exceed max!");
-                    return;
-                }
-                if (stock > max) {
-                    errorLabel.setTextFill(Color.RED);
-                    errorLabel.setText("Stock cannot be greater than max!");
-                    return;
-                }
-                if (stock < min) {
-                    errorLabel.setTextFill(Color.RED);
-                    errorLabel.setText("Stock cannot be less than min!");
-                    return;
-                }
                 switch (this.type) {
                     case InHouse:
                         Inventory.addPart(new InHouse(id, name, price, stock, min, max, Integer.parseInt(bonusField.getText())));
@@ -132,30 +134,16 @@ public class AddPartFormController implements Initializable {
                 Stage stage = (Stage) cancelButton.getScene().getWindow();
                 stage.close();
 
-            } catch (MissingValueException e) {
-                errorLabel.setTextFill(Color.RED);
-                errorLabel.setText("*Please fill out all fields");
             } catch (Exception e) {
-                errorLabel.setTextFill(Color.RED);
-                errorLabel.setText("The provided values are incorrect/exceed size");
+                errorAlert("The provided values are incorrect");
                 e.printStackTrace(System.out);
             }
         };
     }
 
-    protected void validateInputs() throws MissingValueException {
-        if (!nameField.getText().isEmpty()) return;
-        if (!priceField.getText().isEmpty()) return;
-        if (!invField.getText().isEmpty()) return;
-        if (!minField.getText().isEmpty()) return;
-        if (!maxField.getText().isEmpty()) return;
-        if (!bonusField.getText().isEmpty()) return;
-        throw new MissingValueException();
-    }
-
     /**
-     * Generates a unique continuous ID
-     * O(n) time. O(1) space
+     * Generate a unique continuous ID
+     * O(n) time; n = # of parts in Inventory
      *
      * @return a unique id for an Inventory part
      */
@@ -166,6 +154,63 @@ public class AddPartFormController implements Initializable {
             id += 1;
         }
         return id;
+    }
+
+    /**
+     * Validate the given input, send alert if incorrect
+     * @return a boolean representing whether the input is valid or not
+     */
+    protected boolean inputValid() {
+        if (nameField.getText().isEmpty()) {
+            errorAlert("The name field cannot be empty!");
+            return false;
+        }
+        else if (priceField.getText().isEmpty()) {
+            errorAlert("The price field cannot be empty!");
+            return false;
+        }
+        else if (invField.getText().isEmpty()) {
+            errorAlert("The inv field cannot be empty!");
+            return false;
+        }
+        else if (minField.getText().isEmpty()) {
+            errorAlert("The min field cannot be empty!");
+            return false;
+        }
+        if (maxField.getText().isEmpty()) {
+            errorAlert("The max field cannot be empty!");
+            return false;
+        }
+        if (bonusField.getText().isEmpty()) {
+            if (type == PartType.InHouse) {
+                errorAlert("The machine ID field cannot be empty!");
+            } else if (type == PartType.Outsourced) {
+                errorAlert("The company name field cannot be empty!");
+            }
+            return false;
+        }
+
+        int stock = Integer.parseInt(invField.getText());
+        int min = Integer.parseInt(minField.getText());
+        int max = Integer.parseInt(maxField.getText());
+        if(min < 0 || max < 0 || stock < 0) {
+            errorAlert("Min, max, and stock must equal or exceed 0");
+            return false;
+        }
+
+        if (min >= max) {
+            errorAlert("Min cannot equal or exceed max!");
+            return false;
+        }
+        if (stock > max) {
+            errorAlert("Current inv cannot exceed max!");
+            return false;
+        }
+        if (stock < min) {
+            errorAlert("Min cannot exceed the current inv!");
+            return false;
+        }
+        return true;
     }
 
 }

@@ -1,8 +1,8 @@
-package gs_c482.Controllers;
+package Inventory_Manager.Controllers;
 
-import gs_c482.Models.Inventory;
-import gs_c482.Models.Part;
-import gs_c482.Models.Product;
+import Inventory_Manager.Models.Inventory;
+import Inventory_Manager.Models.Part;
+import Inventory_Manager.Models.Product;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,8 +19,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.MissingFormatArgumentException;
 import java.util.ResourceBundle;
+
+import static Inventory_Manager.Utility.confirmAlert;
+import static Inventory_Manager.Utility.errorAlert;
 
 public class MainFormController implements Initializable {
 
@@ -104,12 +106,13 @@ public class MainFormController implements Initializable {
     }
 
     /**
-     * ERROR: couldn't locate file with current maven file structure
+     * Open new add part form
+     * @return an event
      */
     protected EventHandler<ActionEvent> onActionOpenNewAddPartMenu() {
         return event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gs_c482/part-form.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Inventory_Manager/part-form.fxml"));
                 loader.setController(new AddPartFormController());
                 Scene scene = new Scene(loader.load(), 600, 400);
 
@@ -128,25 +131,25 @@ public class MainFormController implements Initializable {
     }
 
     /**
-     * Handles an event that opens a new window for modifying the currently selected part
-     *
-     * @return an EventHandler to be passed to an onAction
+     * Open new modify part form, pass selected input to new controller
+     * @return an event
      */
     protected EventHandler<ActionEvent> onActionOpenNewModifyPartMenu() {
         return event -> {
             try {
                 Part selectedPart = partsTableView.getSelectionModel().getSelectedItem();
                 if (selectedPart == null) {
-                    throw new MissingValueException();
+                    errorAlert("A part is not selected!");
+                    return;
                 }
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gs_c482/part-form.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Inventory_Manager/part-form.fxml"));
                 loader.setController(new ModifyPartFormController());
                 Scene scene = new Scene(loader.load(), 600, 400);
 
                 Stage stage = new Stage();
                 stage.setUserData(selectedPart);
-                stage.setTitle("Add Part");
+                stage.setTitle("Modify Part");
                 stage.setScene(scene);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.setResizable(false);
@@ -154,34 +157,39 @@ public class MainFormController implements Initializable {
 
                 ModifyPartFormController controller = loader.getController();
                 controller.loadData(selectedPart);
-            } catch (MissingValueException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "A part is not selected!");
-                alert.showAndWait();
             } catch (Exception e) {
                 e.printStackTrace(System.out);
             }
         };
     }
 
+    /**
+     * Delete part based on selected part
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionDeletePart() {
         return event -> {
             try {
                 Part selectedPart = partsTableView.getSelectionModel().getSelectedItem();
                 if (selectedPart == null) {
-                    throw new MissingValueException();
+                    errorAlert("A part is not selected!");
+                    return;
                 }
-                Inventory.deletePart(selectedPart);
-                queryPart();
+                Alert alert = confirmAlert("Are you sure you would like to delete " +  "'" + selectedPart.getName() +"'" + "?");
+                if(alert.getResult() == ButtonType.YES) {
+                    Inventory.deletePart(selectedPart);
+                    queryPart();
+                }
 
-            } catch (MissingValueException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "A part is not selected!", ButtonType.OK);
-                alert.showAndWait();
             } catch (Exception e) {
                 e.printStackTrace(System.out);
             }
         };
     }
 
+    /**
+     * Query parts based on the search field input
+     */
     protected void queryPart() {
         try {
             String query = partTextField.getText().trim();
@@ -204,8 +212,7 @@ public class MainFormController implements Initializable {
     }
 
     /**
-     * Action that queries and updates the parts table
-     * Acts as an eventHandler version of queryPart
+     * EventHandler that returns the queryPart() function
      * @return an event
      */
     protected EventHandler<KeyEvent> onActionQueryPart() {
@@ -214,10 +221,14 @@ public class MainFormController implements Initializable {
         };
     }
 
+    /**
+     * Open new add product form
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionOpenNewAddProductMenu() {
         return event -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gs_c482/product-form.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Inventory_Manager/product-form.fxml"));
                 loader.setController(new AddProductFormController());
                 Scene scene = new Scene(loader.load(), 857, 557);
 
@@ -233,52 +244,108 @@ public class MainFormController implements Initializable {
         };
     }
 
+    /**
+     * Open new modify product form, pass selected input to new controller
+     * @return
+     */
     protected EventHandler<ActionEvent> onActionOpenNewModifyProductMenu() {
         return event -> {
             try {
-                Product selectedProduct = productsTableView.getSelectionModel().selectedItemProperty().getValue();
+                Product selectedProduct = productsTableView.getSelectionModel().getSelectedItem();
+                if (selectedProduct == null) {
+                    errorAlert("A product is not selected!");
+                    return;
+                }
 
-            } catch (Exception e) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Inventory_Manager/product-form.fxml"));
+                loader.setController(new ModifyProductFormController());
+                Scene scene = new Scene(loader.load(), 857, 557);
+
+                Stage stage = new Stage();
+                stage.setUserData(selectedProduct);
+                stage.setTitle("Modify Product");
+                stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setResizable(false);
+                stage.show();
+
+                ModifyProductFormController controller = loader.getController();
+                controller.loadData(selectedProduct);
+            }  catch (Exception e) {
                 e.printStackTrace(System.out);
             }
         };
     }
 
+    /**
+     * Delete product based on selected product
+     * FUTURE ENHANCEMENT: I think it would have made way more sense to prevent deletion of parts that are being used
+     * rather than products that are using parts.
+     *
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionDeleteProduct() {
         return event -> {
             try {
                 Product selectedProduct = productsTableView.getSelectionModel().selectedItemProperty().getValue();
-                Inventory.deleteProduct(selectedProduct);
-                productsTableView.refresh();
+                if (selectedProduct == null) {
+                    errorAlert("A product is not selected!");
+                    return;
+                }
+                if(!selectedProduct.getAllAssociatedParts().isEmpty()) {
+                    errorAlert("A product with associated parts cannot be deleted!");
+                    return;
+                }
+                Alert alert = confirmAlert("Are you sure you would like to delete " +  "'" + selectedProduct.getName() +"'" + "?");
+                if(alert.getResult() == ButtonType.YES) {
+                    Inventory.deleteProduct(selectedProduct);
+                    queryProduct();
+                }
             } catch (Exception e) {
+                errorAlert("An unknown error has occurred!");
                 e.printStackTrace(System.out);
             }
         };
     }
 
+    /**
+     * EventHandler that returns the queryProduct() function
+     * @return an event
+     */
     protected EventHandler<KeyEvent> onActionQueryProduct() {
         return event -> {
-            try {
-                String query = productTextField.getText().trim();
-                if (query.isEmpty()) {
-                    productsTableView.setItems(Inventory.getAllProducts());
-                    return;
-                }
-                if (query.chars().allMatch(Character::isDigit)) {
-                    ObservableList<Product> idQuery = FXCollections.observableArrayList();
-                    idQuery.add(Inventory.lookupProduct(Integer.parseInt(query)));
-                    productsTableView.setItems(idQuery);
-                    productsTableView.refresh();
-                    return;
-                }
-                productsTableView.setItems(Inventory.lookupProduct(query));
-                productsTableView.refresh();
-            } catch (Exception e) {
-                e.printStackTrace(System.out);
-            }
+            queryProduct();
         };
     }
 
+    /**
+     * Query products based on the search field input
+     */
+    protected void queryProduct() {
+        try {
+            String query = productTextField.getText().trim();
+            if (query.isEmpty()) {
+                productsTableView.setItems(Inventory.getAllProducts());
+                return;
+            }
+            if (query.chars().allMatch(Character::isDigit)) {
+                ObservableList<Product> idQuery = FXCollections.observableArrayList();
+                idQuery.add(Inventory.lookupProduct(Integer.parseInt(query)));
+                productsTableView.setItems(idQuery);
+                productsTableView.refresh();
+                return;
+            }
+            productsTableView.setItems(Inventory.lookupProduct(query));
+            productsTableView.refresh();
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
+    }
+
+    /**
+     * Close the application
+     * @return an event
+     */
     protected EventHandler<ActionEvent> onActionExit() {
         return event -> {
             Platform.exit();

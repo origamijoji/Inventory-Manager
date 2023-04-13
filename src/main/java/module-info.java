@@ -1,12 +1,12 @@
-module com.example.demo {
+module Inventory_Manager {
     requires javafx.controls;
     requires javafx.fxml;
 
 
-    opens gs_c482 to javafx.fxml;
-    exports gs_c482;
-    exports gs_c482.Models;
-    opens gs_c482.Models to javafx.fxml;
-    exports gs_c482.Controllers;
-    opens gs_c482.Controllers to javafx.fxml;
+    opens Inventory_Manager to javafx.fxml;
+    exports Inventory_Manager;
+    exports Inventory_Manager.Models;
+    opens Inventory_Manager.Models to javafx.fxml;
+    exports Inventory_Manager.Controllers;
+    opens Inventory_Manager.Controllers to javafx.fxml;
 }

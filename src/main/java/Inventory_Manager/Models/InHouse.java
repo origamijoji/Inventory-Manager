@@ -1,6 +1,4 @@
-package gs_c482.Models;
-
-import gs_c482.Models.Part;
+package Inventory_Manager.Models;
 
 public class InHouse extends Part {
     private int machineId;

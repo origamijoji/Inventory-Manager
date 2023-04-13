@@ -1,4 +1,4 @@
-package gs_c482.Models;
+package Inventory_Manager.Models;
 
 public class Outsourced extends Part {
 
